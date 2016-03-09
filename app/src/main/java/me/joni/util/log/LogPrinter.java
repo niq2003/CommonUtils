@@ -13,14 +13,15 @@ import java.util.concurrent.Executors;
 
 public class LogPrinter {
 
-    private static ExecutorService mExecutorService;
-    private static TelephonyInfo mTelephonyInfo;
+    private ExecutorService mExecutorService;
+    private TelephonyInfo mTelephonyInfo;
     private LogSettings mLogSettings;
     private String logPath;
 
     public LogPrinter() {
         mExecutorService = Executors.newSingleThreadExecutor();
         mLogSettings = CommonLogger.getSettings();
+        mTelephonyInfo = new TelephonyInfo(mLogSettings.getContext());
         logPath = getLogFilePath(generateLogFileName());
         cleanLogFiles();
     }
@@ -117,8 +118,8 @@ public class LogPrinter {
 
     private String buildLogMsg(long threadId, int logLevel, String srcTag, String data) {
         String timeStamp = getTimeStamp();
-        String networkType = getNetworkType();
         String logTag = getLogLevelString(logLevel);
+        String networkType = mTelephonyInfo.getCurrentNetworkType();
         StringBuffer buffer = new StringBuffer("[")
                 .append(logTag)
                 .append("] ")
@@ -133,15 +134,6 @@ public class LogPrinter {
                 .append(data)
                 .append("\r\n");
         return buffer.toString();
-    }
-
-    private String getNetworkType() {
-        String networkType = "?";
-        if (mTelephonyInfo == null) {
-            mTelephonyInfo = new TelephonyInfo(mLogSettings.getContext());
-        }
-        networkType = mTelephonyInfo.getNetworkState();
-        return networkType;
     }
 
     private String getTimeStamp() {

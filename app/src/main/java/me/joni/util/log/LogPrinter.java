@@ -38,7 +38,7 @@ public class LogPrinter {
                             file.createNewFile();
                         }
                         fos = new FileOutputStream(file, true);
-                        fos.write(msg.getBytes());
+                        fos.write(msg.getBytes(mLogSettings.getCharset()));
                     } catch (IOException e) {
                         Log.e("FileUtils", e.getMessage());
                     } finally {

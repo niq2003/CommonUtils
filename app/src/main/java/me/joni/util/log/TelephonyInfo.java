@@ -75,7 +75,7 @@ public final class TelephonyInfo {
         String type = "UNKNOWN";
         switch (networkClass) {
             case NETWORK_CLASS_UNAVAILABLE:
-                type = "无";
+                type = "UNAVAILABLE";
                 break;
             case NETWORK_CLASS_WIFI:
                 type = "WIFI";

@@ -8,7 +8,7 @@ import me.joni.util.log.CommonLogger;
  * Created by niqiang on 16/3/8.
  */
 public class CommonApplication extends Application {
-    private static final String TAG = CommonApplication.class.getCanonicalName();
+    private static final String TAG = CommonApplication.class.getSimpleName();
     @Override
     public void onCreate() {
         super.onCreate();
@@ -16,5 +16,6 @@ public class CommonApplication extends Application {
         CommonLogger.init(this).setDebug(true);
         CommonLogger.d(TAG, TAG + " oncreate.");
         CommonLogger.e(TAG, "error message");
+        CommonLogger.e("heheheehehe");
     }
 }

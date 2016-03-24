@@ -97,6 +97,14 @@ public final class CommonLogger {
         writeLog(Log.ERROR, tag, data + '\n' + Log.getStackTraceString(e));
     }
 
+    public static final void f(String data) {
+        writeLog(LogPrinter.FILE, getTag(), data);
+    }
+
+    public static final void f(String tag, String data) {
+        writeLog(LogPrinter.FILE, tag, data);
+    }
+
     private static void writeLog(int logLevel, String tag, String msg) {
         if (!mSettings.isWriteToFile()) return;
         if (mPrinter == null) {

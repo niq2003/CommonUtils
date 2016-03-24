@@ -13,6 +13,8 @@ import java.util.concurrent.Executors;
 
 public class LogPrinter {
 
+    public static final int FILE = 10;
+
     private ExecutorService mExecutorService;
     private TelephonyInfo mTelephonyInfo;
     private LogSettings mLogSettings;
@@ -163,6 +165,9 @@ public class LogPrinter {
                 break;
             case Log.VERBOSE :
                 tag = "VERBOSE";
+                break;
+            case FILE :
+                tag = "FILE";
                 break;
             default :
                 break;

@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
-    private static final String TAG = "CrashHandler";
+    private static final String TAG = CrashHandler.class.getSimpleName();
 
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT1 = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -31,6 +31,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
     private Context mContext;
 
+    private CrashHandler() {}
 
     public static CrashHandler getInstance() {
         return sCrashHandler;
@@ -70,7 +71,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             writer = new PrintWriter(file);
 
             writer.println("Date:" + SIMPLE_DATE_FORMAT.format(date));
-            writer.println("----------------------------------------System Infomation-----------------------------------");
+            writer.println("----------------System Infomation----------------");
 
             String packageName = mContext.getPackageName();
             writer.println("AppPkgName:" + packageName);

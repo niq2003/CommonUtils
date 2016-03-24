@@ -17,7 +17,6 @@ import java.util.Date;
 public class SimpleLogger {
 
     private static final String TAG = "SimpleLogger";
-    private static final String LOG_FOLDER = "CommonUtil/Log/";
 
     private static final int VERBOSE = android.util.Log.VERBOSE;
     private static final int DEBUG = android.util.Log.DEBUG;
@@ -27,35 +26,37 @@ public class SimpleLogger {
     private static final int ASSERT = android.util.Log.ASSERT;
     private static final long MAX_LOG_FILE = 1024 * 1024 * 8; //8MB
 
-    private static boolean sDebug = false;
-    private static boolean sFileLog = false;
+    private static String LOG_FOLDER = "CommonUtils/Log/";
+    private static int sFileLevel = ERROR;
+    private static boolean sLoggable = true;
     private static final SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final SimpleDateFormat sFormat1 = new SimpleDateFormat("yyyyMMdd");
 
     private SimpleLogger() {
     }
 
-    private static final File sDir = new File(Environment.getExternalStorageDirectory(), LOG_FOLDER);
-
-    static {
-        sFileLog = sDir.exists() && sDir.isDirectory();
-        sDebug = sFileLog;
+    private static boolean isFileLog(int logLevel) {
+        return logLevel >= sFileLevel;
     }
 
-    public static boolean isDebug() {
-        return sDebug;
+    /**
+     *
+     * @param isLoggable set loggable
+     * @param fileLevel set log level to write file when level >= fileLevel
+     * @param logFolder set log folder to save log
+     */
+    public static void setLogger(boolean isLoggable, int fileLevel, String logFolder) {
+        sLoggable = isLoggable;
+        sFileLevel = fileLevel;
+        LOG_FOLDER = logFolder;
     }
 
-    private static boolean isFileLog() {
-        return sFileLog;
+    public static void setLogger(boolean isLoggable, int fileLevel) {
+        setLogger(isLoggable, fileLevel, LOG_FOLDER);
     }
 
-    public static boolean isLoggable(int i) {
-        return isDebug();
-    }
-
-    public static boolean isLoggable() {
-        return isDebug();
+    private static boolean isLoggable() {
+        return sLoggable;
     }
 
     private static String levelToStr(int level) {
@@ -107,7 +108,7 @@ public class SimpleLogger {
     private static void logToFileInner(int level, String tag, String format, Object[] args, Throwable tr) {
         PrintWriter writer = null;
         try {
-            if (!isFileLog()) {
+            if (!isFileLog(level)) {
                 return;
             }
 
@@ -117,7 +118,7 @@ public class SimpleLogger {
             }
             writer = new PrintWriter(new FileWriter(logFile, true));
             String msg = String.format(format, args);
-            String log = String.format("%s %s-%s %s/%s %s", sFormat.format(new Date()), Process.myPid(), Process.myUid(), levelToStr(level), tag, msg);
+            String log = String.format("%s %s-%s %s/%s: %s", sFormat.format(new Date()), Process.myPid(), Process.myUid(), levelToStr(level), tag, msg);
             writer.println(log);
             if (tr != null) {
                 tr.printStackTrace(writer);
@@ -155,7 +156,7 @@ public class SimpleLogger {
     }
 
     public static void v(String tag, String format, Throwable tr, Object... args) {
-        if (!isLoggable(VERBOSE)) {
+        if (!isLoggable()) {
             return;
         }
 
@@ -168,7 +169,7 @@ public class SimpleLogger {
     }
 
     public static void d(String tag, String format, Throwable tr, Object... args) {
-        if (!isLoggable(DEBUG)) {
+        if (!isLoggable()) {
             return;
         }
         println(DEBUG, tag, format, args, tr);
@@ -179,7 +180,7 @@ public class SimpleLogger {
     }
 
     public static void i(String tag, String format, Throwable tr, Object... args) {
-        if (!isLoggable(INFO)) {
+        if (!isLoggable()) {
             return;
         }
         println(INFO, tag, format, args, tr);
@@ -190,7 +191,7 @@ public class SimpleLogger {
     }
 
     public static void w(String tag, String format, Throwable tr, Object... args) {
-        if (!isLoggable(WARN)) {
+        if (!isLoggable()) {
             return;
         }
         println(WARN, tag, format, args, tr);
@@ -205,7 +206,7 @@ public class SimpleLogger {
     }
 
     public static void e(String tag, String format, Throwable tr, Object... args) {
-        if (!isLoggable(ERROR)) {
+        if (!isLoggable()) {
             return;
         }
         println(ERROR, tag, format, args, tr);
@@ -220,9 +221,6 @@ public class SimpleLogger {
     }
 
     public static void wtf(String tag, String format, Throwable tr, Object... args) {
-        if (!isLoggable()) {
-            return;
-        }
         println(ASSERT, tag, format, args, tr);
     }
 }
